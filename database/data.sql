@@ -9,3 +9,6 @@
 --      ('Learn to code', false),
 --      ('Build projects', false),
 --      ('Get a job', false);
+
+
+INSERT INTO Series (name) VALUES ('Series 1'), ('Series 2'), ('Series 3'), ('Series 4');
