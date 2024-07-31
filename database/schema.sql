@@ -24,7 +24,7 @@ CREATE TABLE "shoppingCartItems" (
   "shoppingCartItemsId" serial PRIMARY KEY,
   "seriesId" int,
   "quantity" int,
-  "createdAt" timestampz NOT NULL DEFAULT (now())
+  "createdAt" timestamp NOT NULL DEFAULT (now())
 );
 
 ALTER TABLE "smiskis" ADD FOREIGN KEY ("seriesId") REFERENCES "series" ("seriesId");

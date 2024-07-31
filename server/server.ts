@@ -4,6 +4,26 @@ import express from 'express';
 import pg from 'pg';
 import { ClientError, errorMiddleware } from './lib/index.js';
 
+export type Series = {
+  seriesId: number;
+  name: string;
+};
+export type Smiskis = {
+  smiskisId: number;
+  seriesId: number;
+  bodyType: string;
+  pose: string;
+  found: string;
+  description: string;
+};
+
+export type ShoppingCartItem = {
+  shoppingCartItemsId: number;
+  seriesId: number;
+  quantity: number;
+  createdAt: string;
+};
+
 const db = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -12,26 +32,155 @@ const db = new pg.Pool({
 });
 
 const app = express();
-
-// Create paths for static directories
-const reactStaticDir = new URL('../client/dist', import.meta.url).pathname;
-const uploadsStaticDir = new URL('public', import.meta.url).pathname;
-
-app.use(express.static(reactStaticDir));
-// Static directory for file uploads server/public/
-app.use(express.static(uploadsStaticDir));
 app.use(express.json());
 
-app.get('/api/hello', (req, res) => {
-  res.json({ message: 'Hello, World!' });
+// get all series
+app.get('/api/series', async (req, res, next) => {
+  try {
+    const sql = `
+    select * from series`;
+    const result = await db.query<Series>(sql);
+
+    res.json(result.rows);
+  } catch (err) {
+    next(err);
+  }
 });
 
-/*
- * Handles paths that aren't handled by any other route handler.
- * It responds with `index.html` to support page refreshes with React Router.
- * This must be the _last_ route, just before errorMiddleware.
- */
-app.get('*', (req, res) => res.sendFile(`${reactStaticDir}/index.html`));
+// get all smiskis
+app.get('/api/smiskis', async (req, res, next) => {
+  try {
+    const sql = `
+    select * from smiskis`;
+    const result = await db.query<Smiskis>(sql);
+
+    res.json(result.rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// get series by id
+app.get('/api/series/:seriesId', async (req, res, next) => {
+  try {
+    const { seriesId } = req.params;
+    if (!Number.isInteger(+seriesId)) {
+      throw new ClientError(400, 'seriesId must be a integer');
+    }
+    const sql = `
+    select * from series
+    where "seriesId" = $1`;
+    const params = [seriesId];
+    const result = await db.query<Series>(sql, params);
+    const [series] = result.rows;
+    if (!series) throw new ClientError(400, `Series ${seriesId} not found.`);
+    res.json(series);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// get smiskis by id
+app.get('/api/smiskis/:smiskisId', async (req, res, next) => {
+  try {
+    const { smiskisId } = req.params;
+    if (!Number.isInteger(+smiskisId)) {
+      throw new ClientError(400, 'smiskisId must be a integer');
+    }
+    const sql = `
+    select * from smiskis
+    where "smiskisId" = $1`;
+    const params = [smiskisId];
+    const result = await db.query<Smiskis>(sql, params);
+    const [smiskis] = result.rows;
+    if (!smiskis) throw new ClientError(400, `Smiskis ${smiskisId} not found.`);
+    res.json(smiskis);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// add item to cart
+app.post('/api/shoppingCartItems', async (req, res, next) => {
+  try {
+    const { seriesId, quantity } = req.body;
+    const sql = `
+    insert into "shoppingCartItems" ("seriesId", "quantity")
+    values ($1, $2)
+    returning *`;
+    const params = [seriesId, quantity];
+    const result = await db.query<ShoppingCartItem>(sql, params);
+    const [shoppingCartItems] = result.rows;
+    res.status(201).json(shoppingCartItems);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// get all items in cart
+app.get('/api/shoppingCartItems', async (req, res, next) => {
+  try {
+    const sql = `select * from "shoppingCartItems"`;
+    const result = await db.query<ShoppingCartItem>(sql);
+    res.json(result.rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// update shoppingcartitem by id
+app.put(
+  '/api/shoppingCartItems/:shoppingCartItemsId',
+  async (req, res, next) => {
+    try {
+      const { shoppingCartItemsId } = req.params;
+      const { seriesId, quantity } = req.body;
+      const sql = `
+      update "shoppingCartItems"
+      set "seriesId" = $1,
+          "quantity" = $2
+      where "shoppingCartItemsId" = $3
+      returning *`;
+      const params = [seriesId, quantity, shoppingCartItemsId];
+      const result = await db.query<ShoppingCartItem>(sql, params);
+      const [shoppingCartItem] = result.rows;
+      if (!shoppingCartItem) {
+        throw new ClientError(
+          404,
+          `Shopping cart item ${shoppingCartItemsId} not found`
+        );
+      }
+      res.json(shoppingCartItem);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+// delete item from cart
+app.delete(
+  '/api/shoppingCartItems/:shoppingCartItemsId',
+  async (req, res, next) => {
+    try {
+      const { shoppingCartItemsId } = req.params;
+      const sql = `delete from "shoppingCartItems"
+        where "shoppingCartItemsId" = $1
+        returning *`;
+      const params = [shoppingCartItemsId];
+      const result = await db.query<ShoppingCartItem>(sql, params);
+      const [deletedItem] = result.rows;
+      if (!deletedItem) {
+        throw new ClientError(
+          404,
+          `Shopping cart item ${shoppingCartItemsId} not found.`
+        );
+      }
+      res.json(deletedItem);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 app.use(errorMiddleware);
 
