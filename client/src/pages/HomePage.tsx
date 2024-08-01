@@ -1,6 +1,3 @@
-// import React from 'react';
-// import { Link } from 'react-router-dom';
-
 export function HomePage() {
   return (
     <div className="bg-purple-300 ">

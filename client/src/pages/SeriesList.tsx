@@ -13,7 +13,6 @@ export function SeriesList() {
         const response = await fetch('/api/series');
         if (!response.ok) throw new Error(`Response status ${response.status}`);
         const series = (await response.json()) as Series[];
-        console.log(series);
         setSeries(series);
       } catch (err) {
         setErr(err);
