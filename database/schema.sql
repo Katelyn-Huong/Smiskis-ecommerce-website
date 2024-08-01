@@ -6,10 +6,13 @@ drop schema "public" cascade;
 
 create schema "public";
 
+
 CREATE TABLE "series" (
   "seriesId" serial PRIMARY KEY,
-  "name" varchar(50)
+  "name" varchar(50),
+  "imageUrl" varchar(255)
 );
+
 
 CREATE TABLE "smiskis" (
   "smiskisId" serial PRIMARY KEY,
@@ -27,6 +30,10 @@ CREATE TABLE "shoppingCartItems" (
   "createdAt" timestamp NOT NULL DEFAULT (now())
 );
 
+-- ALTER TABLE "series"
+-- ADD COLUMN "imageUrl" varchar(255);
+
 ALTER TABLE "smiskis" ADD FOREIGN KEY ("seriesId") REFERENCES "series" ("seriesId");
+
 
 ALTER TABLE "shoppingCartItems" ADD FOREIGN KEY ("seriesId") REFERENCES "series" ("seriesId");
