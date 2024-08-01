@@ -2,27 +2,9 @@
 import 'dotenv/config';
 import express from 'express';
 import pg from 'pg';
+import path from 'path';
 import { ClientError, errorMiddleware } from './lib/index.js';
-
-export type Series = {
-  seriesId: number;
-  name: string;
-};
-export type Smiskis = {
-  smiskisId: number;
-  seriesId: number;
-  bodyType: string;
-  pose: string;
-  found: string;
-  description: string;
-};
-
-export type ShoppingCartItem = {
-  shoppingCartItemsId: number;
-  seriesId: number;
-  quantity: number;
-  createdAt: string;
-};
+import { Series, Smiskis, ShoppingCartItem } from './lib/data.js';
 
 const db = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -32,6 +14,12 @@ const db = new pg.Pool({
 });
 
 const app = express();
+// Create paths for static directories
+const reactStaticDir = new URL('../client/dist', import.meta.url).pathname;
+const uploadsStaticDir = new URL('public', import.meta.url).pathname;
+app.use(express.static(reactStaticDir));
+// Static directory for file uploads server/public/
+app.use(express.static(uploadsStaticDir));
 app.use(express.json());
 
 // get all series
@@ -181,6 +169,10 @@ app.delete(
     }
   }
 );
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(reactStaticDir, 'index.html'));
+});
 
 app.use(errorMiddleware);
 
