@@ -88,6 +88,24 @@ app.get('/api/smiskis/:smiskisId', async (req, res, next) => {
   }
 });
 
+// get smiskis in specific series
+app.get('/api/series/:seriesId/smiskis', async (req, res, next) => {
+  const { seriesId } = req.params;
+  if (!Number.isInteger(+seriesId)) {
+    throw new ClientError(400, 'seriesId must be an integer');
+  }
+  try {
+    const sql = `
+      select * from smiskis
+      where "seriesId" = $1`;
+    const params = [seriesId];
+    const result = await db.query(sql, params);
+    res.json(result.rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // add item to cart
 app.post('/api/shoppingCartItems', async (req, res, next) => {
   try {

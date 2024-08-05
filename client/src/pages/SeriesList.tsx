@@ -34,9 +34,9 @@ export function SeriesList() {
   }
 
   return (
-    <div className="flex p-4 bg-purple-300">
-      <h1 className="mb-4 text-2xl font-bold">Series</h1>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="flex flex-col items-center min-h-screen p-4 bg-purple-200 ">
+      <h1 className="mb-8 text-2xl font-bold">Series</h1>
+      <div className="grid grid-cols-1 gap-10 bg-purple-100 md:grid-cols-2 lg:grid-cols-2 ">
         {series.map((smiskiseries) => (
           <div
             key={smiskiseries.seriesId}
@@ -45,7 +45,7 @@ export function SeriesList() {
               <img
                 src={smiskiseries.imageUrl}
                 alt={`Series ${smiskiseries.seriesId}`}
-                className="w-full h-auto mb-2 rounded"
+                className="object-cover w-full h-auto mb-2 rounded "
               />
               <h2 className="text-xl font-bold">{smiskiseries.name}</h2>
             </Link>
