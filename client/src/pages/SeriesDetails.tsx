@@ -65,7 +65,11 @@ export function SeriesDetails() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen text-xl bg-purple-200">
+        Loading...
+      </div>
+    );
   }
   if (err) {
     return (
