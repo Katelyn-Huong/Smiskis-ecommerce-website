@@ -10,6 +10,7 @@ export type Smiskis = {
   pose: string;
   found: string;
   description: string;
+  imageUrl: string;
 };
 
 export type ShoppingCartItem = {

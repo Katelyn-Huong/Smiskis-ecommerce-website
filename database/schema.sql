@@ -20,7 +20,8 @@ CREATE TABLE "smiskis" (
   "bodyType" varchar(50),
   "pose" varchar(50),
   "found" varchar(100),
-  "description" text
+  "description" text,
+   "imageUrl" varchar(255)
 );
 
 CREATE TABLE "shoppingCartItems" (

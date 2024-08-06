@@ -1,6 +1,6 @@
 export function HomePage() {
   return (
-    <div className="bg-purple-300 ">
+    <div className="grid gap-4 bg-purple-200 ">
       <img
         src="/images/smiskisglow.webp"
         alt="smiskis glow"

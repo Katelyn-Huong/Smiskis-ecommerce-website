@@ -8,7 +8,7 @@ export function Navbar() {
     <>
       <div className="flex items-center justify-between p-4 bg-purple-200">
         <div className="text-2xl font-bold">
-          <Link to="/" className="text-gray-800 ">
+          <Link to="/" className="text-3xl text-gray-800 ">
             Smiskis
           </Link>
         </div>
@@ -16,14 +16,14 @@ export function Navbar() {
           <li>
             <Link
               to="/series"
-              className="text-lg text-gray-800 no-underline hover:underline">
+              className="text-xl text-gray-800 no-underline hover:underline">
               Products
             </Link>
           </li>
           <li>
             <Link
               to="/cart"
-              className="flex items-center text-lg text-gray-800 no-underline hover:underline">
+              className="flex items-center text-xl text-gray-800 no-underline hover:underline">
               Cart <FontAwesomeIcon icon={faShoppingCart} className="ml-2" />
             </Link>
           </li>
