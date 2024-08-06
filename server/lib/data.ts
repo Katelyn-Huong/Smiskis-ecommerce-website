@@ -17,5 +17,6 @@ export type ShoppingCartItem = {
   shoppingCartItemsId: number;
   seriesId: number;
   quantity: number;
+  imageUrl: string;
   createdAt: string;
 };

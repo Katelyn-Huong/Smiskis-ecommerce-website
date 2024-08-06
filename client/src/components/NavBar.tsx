@@ -22,7 +22,7 @@ export function Navbar() {
           </li>
           <li>
             <Link
-              to="/cart"
+              to="/checkout"
               className="flex items-center text-xl text-gray-800 no-underline hover:underline">
               Cart <FontAwesomeIcon icon={faShoppingCart} className="ml-2" />
             </Link>

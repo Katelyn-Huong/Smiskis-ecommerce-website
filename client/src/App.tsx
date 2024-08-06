@@ -5,6 +5,8 @@ import { SeriesList } from './pages/SeriesList';
 import './index.css';
 import { HomePage } from './pages/HomePage';
 import { SeriesDetails } from './pages/SeriesDetails';
+import './App.css';
+import { CheckoutPage } from './pages/CheckoutPage';
 
 export default function App() {
   return (
@@ -13,6 +15,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="series" element={<SeriesList />} />
         <Route path="series/:seriesId" element={<SeriesDetails />} />
+        <Route path="checkout" element={<CheckoutPage />} />
 
         <Route path="*" element={<NotFound />} />
       </Route>

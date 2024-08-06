@@ -43,6 +43,14 @@ export function SeriesDetails() {
     try {
       const response = await fetch('/api/shoppingCartItems', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          seriesId: seriesId,
+          quantity: quantity,
+          imageUrl: seriesDetailsBanner(seriesId),
+        }),
       });
       if (!response.ok) throw new Error(`Response status ${response.status}`);
       alert('Added to cart!');

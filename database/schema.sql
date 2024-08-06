@@ -28,13 +28,17 @@ CREATE TABLE "shoppingCartItems" (
   "shoppingCartItemsId" serial PRIMARY KEY,
   "seriesId" int,
   "quantity" int,
+  "imageUrl" varchar(255),
   "createdAt" timestamp NOT NULL DEFAULT (now())
 );
 
--- ALTER TABLE "series"
--- ADD COLUMN "imageUrl" varchar(255);
 
 ALTER TABLE "smiskis" ADD FOREIGN KEY ("seriesId") REFERENCES "series" ("seriesId");
 
 
 ALTER TABLE "shoppingCartItems" ADD FOREIGN KEY ("seriesId") REFERENCES "series" ("seriesId");
+
+
+
+
+

@@ -5,6 +5,7 @@ import pg from 'pg';
 import path from 'path';
 import { ClientError, errorMiddleware } from './lib/index.js';
 import { Series, Smiskis, ShoppingCartItem } from './lib/data.js';
+import { deepStrictEqual } from 'assert';
 
 const db = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -134,21 +135,20 @@ app.get('/api/shoppingCartItems', async (req, res, next) => {
   }
 });
 
-// update shoppingcartitem by id
+// update shopping cart item by id
 app.put(
   '/api/shoppingCartItems/:shoppingCartItemsId',
   async (req, res, next) => {
     try {
       const { shoppingCartItemsId } = req.params;
-      const { seriesId, quantity } = req.body;
+      const { quantity } = req.body;
       const sql = `
-      update "shoppingCartItems"
-      set "seriesId" = $1,
-          "quantity" = $2
-      where "shoppingCartItemsId" = $3
-      returning *`;
-      const params = [seriesId, quantity, shoppingCartItemsId];
-      const result = await db.query<ShoppingCartItem>(sql, params);
+    UPDATE "shoppingCartItems"
+    SET "quantity" = $1
+    WHERE "shoppingCartItemsId" = $2
+    RETURNING *`;
+      const params = [quantity, shoppingCartItemsId];
+      const result = await db.query(sql, params);
       const [shoppingCartItem] = result.rows;
       if (!shoppingCartItem) {
         throw new ClientError(
@@ -169,16 +169,17 @@ app.delete(
   async (req, res, next) => {
     try {
       const { shoppingCartItemsId } = req.params;
-      const sql = `delete from "shoppingCartItems"
-        where "shoppingCartItemsId" = $1
-        returning *`;
+      const sql = `
+    DELETE FROM "shoppingCartItems"
+    WHERE "shoppingCartItemsId" = $1
+    RETURNING *`;
       const params = [shoppingCartItemsId];
-      const result = await db.query<ShoppingCartItem>(sql, params);
+      const result = await db.query(sql, params);
       const [deletedItem] = result.rows;
       if (!deletedItem) {
         throw new ClientError(
           404,
-          `Shopping cart item ${shoppingCartItemsId} not found.`
+          `Shopping cart item ${shoppingCartItemsId} not found`
         );
       }
       res.json(deletedItem);
@@ -187,6 +188,60 @@ app.delete(
     }
   }
 );
+
+// // update shoppingcartitem by id
+// app.put(
+//   '/api/shoppingCartItems/:shoppingCartItemsId',
+//   async (req, res, next) => {
+//     try {
+//       const { shoppingCartItemsId } = req.params;
+//       const { seriesId, quantity } = req.body;
+//       const sql = `
+//       update "shoppingCartItems"
+//       set "seriesId" = $1,
+//           "quantity" = $2
+//       where "shoppingCartItemsId" = $3
+//       returning *`;
+//       const params = [seriesId, quantity, shoppingCartItemsId];
+//       const result = await db.query<ShoppingCartItem>(sql, params);
+//       const [shoppingCartItem] = result.rows;
+//       if (!shoppingCartItem) {
+//         throw new ClientError(
+//           404,
+//           `Shopping cart item ${shoppingCartItemsId} not found`
+//         );
+//       }
+//       res.json(shoppingCartItem);
+//     } catch (err) {
+//       next(err);
+//     }
+//   }
+// );
+
+// // delete item from cart
+// app.delete(
+//   '/api/shoppingCartItems/:shoppingCartItemsId',
+//   async (req, res, next) => {
+//     try {
+//       const { shoppingCartItemsId } = req.params;
+//       const sql = `delete from "shoppingCartItems"
+//         where "shoppingCartItemsId" = $1
+//         returning *`;
+//       const params = [shoppingCartItemsId];
+//       const result = await db.query<ShoppingCartItem>(sql, params);
+//       const [deletedItem] = result.rows;
+//       if (!deletedItem) {
+//         throw new ClientError(
+//           404,
+//           `Shopping cart item ${shoppingCartItemsId} not found.`
+//         );
+//       }
+//       res.json(deletedItem);
+//     } catch (err) {
+//       next(err);
+//     }
+//   }
+// );
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(reactStaticDir, 'index.html'));
