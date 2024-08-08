@@ -1,5 +1,3 @@
-//
-
 import { useEffect, useState } from 'react';
 import { ShoppingCartItem, Smiskis } from '../../../server/lib/data';
 import { useNavigate } from 'react-router-dom';
@@ -43,18 +41,24 @@ export function CheckoutPage() {
     );
   }
 
-  async function updateQuantity(seriesId: number, newQuantity: number) {
+  async function updateQuantity(
+    shoppingCartItemsId: number,
+    newQuantity: number
+  ) {
     try {
-      const response = await fetch(`/api/shoppingCartItems/${seriesId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ quantity: newQuantity }),
-      });
+      const response = await fetch(
+        `/api/shoppingCartItems/${shoppingCartItemsId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ quantity: newQuantity }),
+        }
+      );
       if (!response.ok) throw new Error(`Response status ${response.status}`);
       const updatedCartItems = cartItems.map((item) => {
-        if (item.seriesId === seriesId) {
+        if (item.shoppingCartItemsId === shoppingCartItemsId) {
           return { ...item, quantity: newQuantity };
         }
         return item;
@@ -65,22 +69,26 @@ export function CheckoutPage() {
     }
   }
 
-  async function handleAddQuantity(seriesId: number) {
-    const item = cartItems.find((item) => item.seriesId === seriesId);
+  async function handleAddQuantity(shoppingCartItemsId: number) {
+    const item = cartItems.find(
+      (item) => item.shoppingCartItemsId === shoppingCartItemsId
+    );
     if (!item) return;
 
     const newQuantity = item.quantity + 1;
-    await updateQuantity(seriesId, newQuantity);
+    await updateQuantity(shoppingCartItemsId, newQuantity);
   }
 
-  async function handleSubtractQuantity(seriesId: number) {
-    const item = cartItems.find((item) => item.seriesId === seriesId);
+  async function handleSubtractQuantity(shoppingCartItemsId: number) {
+    const item = cartItems.find(
+      (item) => item.shoppingCartItemsId === shoppingCartItemsId
+    );
     if (!item) return;
 
     const newQuantity = item.quantity - 1;
     if (newQuantity < 1) return;
 
-    await updateQuantity(seriesId, newQuantity);
+    await updateQuantity(shoppingCartItemsId, newQuantity);
   }
 
   async function handleDelete(shoppingCartItemsId: number) {
@@ -113,34 +121,36 @@ export function CheckoutPage() {
       <p className="mb-4 text-lg text-center">
         Total Items: {cartItems.length}
       </p>
-      <div className="space-y-4">
+      <div className="space-y-3">
         {cartItems.map((item) => (
           <div
             key={item.shoppingCartItemsId}
             className="flex items-center p-4 bg-white rounded shadow">
             <img
               src={item.imageUrl}
-              alt={item.pose}
-              className="object-cover w-20 h-20 mr-4"
+              alt={`Series ${item.seriesId}`}
+              className="object-cover w-40 mr-4 h-30"
             />
             <div className="flex-grow">
               <h2 className="text-lg font-bold">Series {item.seriesId}</h2>
               <p>Quantity: {item.quantity}</p>
               <div className="flex items-center mt-2">
                 <button
-                  onClick={() => handleSubtractQuantity(item.seriesId)}
+                  onClick={() =>
+                    handleSubtractQuantity(item.shoppingCartItemsId)
+                  }
                   className="px-2 py-1 bg-gray-300 rounded">
                   -
                 </button>
                 <span className="px-2 mx-2">{item.quantity}</span>
                 <button
-                  onClick={() => handleAddQuantity(item.seriesId)}
+                  onClick={() => handleAddQuantity(item.shoppingCartItemsId)}
                   className="px-2 py-1 bg-gray-300 rounded">
                   +
                 </button>
               </div>
               <button
-                onClick={() => handleDelete(item.seriesId)}
+                onClick={() => handleDelete(item.shoppingCartItemsId)}
                 className="mt-2 text-red-500 underline">
                 Delete
               </button>

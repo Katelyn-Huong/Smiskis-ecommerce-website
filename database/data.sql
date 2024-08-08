@@ -35,7 +35,7 @@ INSERT INTO "smiskis" ("seriesId", "bodyType", "pose", "found", "description", "
 
 INSERT INTO "shoppingCartItems" ("seriesId", "quantity", "imageUrl","createdAt")
 VALUES
-(1, 2,'/images/series/series2cover.png', NOW()),
-(2, 3, '/images/series/series3cover.png', NOW()),
-(3, 4, '/images/series/series4cover.png', NOW()),
-(4, 5, '/images/series/series1cover.png', NOW());
+(1, 2,'/images/series/series1cover.png', NOW()),
+(2, 3, '/images/series/series2cover.png', NOW()),
+(3, 4, '/images/series/series3cover.png', NOW()),
+(4, 5, '/images/series/series4cover.png', NOW());

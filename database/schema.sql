@@ -37,8 +37,3 @@ ALTER TABLE "smiskis" ADD FOREIGN KEY ("seriesId") REFERENCES "series" ("seriesI
 
 
 ALTER TABLE "shoppingCartItems" ADD FOREIGN KEY ("seriesId") REFERENCES "series" ("seriesId");
-
-
-
-
-

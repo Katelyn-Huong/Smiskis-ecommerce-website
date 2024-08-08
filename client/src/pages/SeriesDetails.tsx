@@ -41,18 +41,48 @@ export function SeriesDetails() {
 
   async function handleAddToCart() {
     try {
-      const response = await fetch('/api/shoppingCartItems', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          seriesId: seriesId,
-          quantity: quantity,
-          imageUrl: seriesDetailsBanner(seriesId),
-        }),
-      });
-      if (!response.ok) throw new Error(`Response status ${response.status}`);
+      const cartCheckoutResponse = await fetch('/api/shoppingCartItems');
+      if (!cartCheckoutResponse.ok)
+        throw new Error(`Response status ${cartCheckoutResponse.status}`);
+      const cartItems = (await cartCheckoutResponse.json()) as {
+        seriesId: number;
+        quantity: number;
+        shoppingCartItemsId: number;
+      }[];
+      const existingCartItems = cartItems.find(
+        (item) => item.seriesId === Number(seriesId)
+      );
+      if (existingCartItems) {
+        const newQuantity = existingCartItems.quantity + quantity;
+        const updateCartCheckoutResponse = await fetch(
+          `/api/shoppingCartItems/${existingCartItems.shoppingCartItemsId}`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-type': 'application/json',
+            },
+            body: JSON.stringify({ quantity: newQuantity }),
+          }
+        );
+        if (!updateCartCheckoutResponse.ok)
+          throw new Error(
+            `Response status ${updateCartCheckoutResponse.status}`
+          );
+      } else {
+        const imageUrl = seriesDetailsBanner(seriesId);
+        const response = await fetch('/api/shoppingCartItems', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            seriesId: seriesId,
+            quantity: quantity,
+            imageUrl: imageUrl,
+          }),
+        });
+        if (!response.ok) throw new Error(`Response status ${response.status}`);
+      }
       alert('Added to cart!');
     } catch (err) {
       setErr(err);
@@ -60,6 +90,7 @@ export function SeriesDetails() {
   }
 
   const seriesDetailsBanner = (seriesId: string | undefined) => {
+    console.log('series ID', seriesId);
     switch (seriesId) {
       case '1':
         return '/images/series1cover2.webp';

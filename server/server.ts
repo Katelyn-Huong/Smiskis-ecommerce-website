@@ -108,15 +108,45 @@ app.get('/api/series/:seriesId/smiskis', async (req, res, next) => {
 });
 
 // add item to cart
+// app.post('/api/shoppingCartItems', async (req, res, next) => {
+//   try {
+//     const { seriesId, quantity } = req.body;
+//     const sql2 = `
+//       SELECT "name", "imageUrl"
+//       FROM "series"
+//       WHERE "seriesId" = $1`;
+//     const params2 = [seriesId];
+//     const result2 = await db.query(sql2, params2);
+//     const [seriesSql2] = result2.rows;
+//     if (!seriesSql2) {
+//       throw new ClientError(404, `Series ${seriesId} not found`);
+//     }
+
+//     const { imageUrl } = seriesSql2;
+
+//     const sql = `
+//       INSERT INTO "shoppingCartItems" ("seriesId", "quantity", "imageUrl")
+//       VALUES ($1, $2, $3)
+//       RETURNING *`;
+//     const params = [seriesId, quantity, imageUrl];
+//     const result = await db.query<ShoppingCartItem>(sql, params);
+//     const [shoppingCartItems] = result.rows;
+//     res.status(201).json(shoppingCartItems);
+//   } catch (err) {
+//     next(err);
+//   }
+// });
+
+// add item to cart
 app.post('/api/shoppingCartItems', async (req, res, next) => {
   try {
-    const { seriesId, quantity } = req.body;
+    const { seriesId, quantity, imageUrl } = req.body;
     const sql = `
-    insert into "shoppingCartItems" ("seriesId", "quantity")
-    values ($1, $2)
-    returning *`;
-    const params = [seriesId, quantity];
-    const result = await db.query<ShoppingCartItem>(sql, params);
+      insert into "shoppingCartItems" ("seriesId", "quantity", "imageUrl")
+      values ($1, $2, $3)
+      returning *`;
+    const params = [seriesId, quantity, imageUrl];
+    const result = await db.query(sql, params);
     const [shoppingCartItems] = result.rows;
     res.status(201).json(shoppingCartItems);
   } catch (err) {
@@ -125,6 +155,7 @@ app.post('/api/shoppingCartItems', async (req, res, next) => {
 });
 
 // get all items in cart
+
 app.get('/api/shoppingCartItems', async (req, res, next) => {
   try {
     const sql = `select * from "shoppingCartItems"`;
@@ -143,10 +174,10 @@ app.put(
       const { shoppingCartItemsId } = req.params;
       const { quantity } = req.body;
       const sql = `
-    UPDATE "shoppingCartItems"
-    SET "quantity" = $1
-    WHERE "shoppingCartItemsId" = $2
-    RETURNING *`;
+    update "shoppingCartItems"
+    set "quantity" = $1
+    where "shoppingCartItemsId" = $2
+    returning *`;
       const params = [quantity, shoppingCartItemsId];
       const result = await db.query(sql, params);
       const [shoppingCartItem] = result.rows;
