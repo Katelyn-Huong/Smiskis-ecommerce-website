@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
-import { ShoppingCartItem, Smiskis } from '../../../server/lib/data';
+import { ShoppingCartItem, Series } from '../../../server/lib/data';
 import { useNavigate } from 'react-router-dom';
 
 export function CheckoutPage() {
-  const [cartItems, setCartItems] = useState<(ShoppingCartItem & Smiskis)[]>(
-    []
-  );
+  const [cartItems, setCartItems] = useState<(ShoppingCartItem & Series)[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<unknown>();
   const navigate = useNavigate();
@@ -15,7 +13,8 @@ export function CheckoutPage() {
       try {
         const response = await fetch('/api/shoppingCartItems');
         if (!response.ok) throw new Error(`Response status ${response.status}`);
-        const items = (await response.json()) as (ShoppingCartItem & Smiskis)[];
+        const items = (await response.json()) as (ShoppingCartItem & Series)[];
+        console.log(items);
         setCartItems(items);
       } catch (err) {
         setErr(err);
@@ -111,8 +110,12 @@ export function CheckoutPage() {
   }
 
   let totalQuantity = 0;
+  let totalPrice = 0;
+
   for (let i = 0; i < cartItems.length; i++) {
     totalQuantity += cartItems[i].quantity;
+    totalPrice += cartItems[i].price * cartItems[i].quantity;
+    console.log(cartItems[i].price);
   }
 
   return (
@@ -137,6 +140,10 @@ export function CheckoutPage() {
             <div className="flex-grow">
               <h2 className="text-lg font-bold">Series {item.seriesId}</h2>
               <p>Quantity: {item.quantity}</p>
+              <p className="mb-4 text-lg text-right">
+                Subtotal: ${(item.price * item.quantity).toFixed(2)}
+              </p>
+
               <div className="flex items-center mt-2">
                 <button
                   onClick={() =>
@@ -162,7 +169,10 @@ export function CheckoutPage() {
         ))}
       </div>
       <div className="mt-8 text-center">
-        <button className="px-8 py-2 text-white bg-pink-500 rounded">
+        <p className="mb-4 text-xl text-right">
+          Total: ${totalPrice.toFixed(2)}
+        </p>
+        <button className="px-8 py-3 text-white bg-pink-500 rounded">
           Checkout
         </button>
       </div>

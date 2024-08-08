@@ -108,39 +108,10 @@ app.get('/api/series/:seriesId/smiskis', async (req, res, next) => {
 });
 
 // add item to cart
-// app.post('/api/shoppingCartItems', async (req, res, next) => {
-//   try {
-//     const { seriesId, quantity } = req.body;
-//     const sql2 = `
-//       SELECT "name", "imageUrl"
-//       FROM "series"
-//       WHERE "seriesId" = $1`;
-//     const params2 = [seriesId];
-//     const result2 = await db.query(sql2, params2);
-//     const [seriesSql2] = result2.rows;
-//     if (!seriesSql2) {
-//       throw new ClientError(404, `Series ${seriesId} not found`);
-//     }
-
-//     const { imageUrl } = seriesSql2;
-
-//     const sql = `
-//       INSERT INTO "shoppingCartItems" ("seriesId", "quantity", "imageUrl")
-//       VALUES ($1, $2, $3)
-//       RETURNING *`;
-//     const params = [seriesId, quantity, imageUrl];
-//     const result = await db.query<ShoppingCartItem>(sql, params);
-//     const [shoppingCartItems] = result.rows;
-//     res.status(201).json(shoppingCartItems);
-//   } catch (err) {
-//     next(err);
-//   }
-// });
-
-// add item to cart
 app.post('/api/shoppingCartItems', async (req, res, next) => {
   try {
     const { seriesId, quantity, imageUrl } = req.body;
+
     const sql = `
       insert into "shoppingCartItems" ("seriesId", "quantity", "imageUrl")
       values ($1, $2, $3)
@@ -158,7 +129,7 @@ app.post('/api/shoppingCartItems', async (req, res, next) => {
 
 app.get('/api/shoppingCartItems', async (req, res, next) => {
   try {
-    const sql = `select * from "shoppingCartItems"`;
+    const sql = `select * from "shoppingCartItems" join "series" using ("seriesId")`;
     const result = await db.query<ShoppingCartItem>(sql);
     res.json(result.rows);
   } catch (err) {
@@ -220,60 +191,6 @@ app.delete(
   }
 );
 
-// // update shoppingcartitem by id
-// app.put(
-//   '/api/shoppingCartItems/:shoppingCartItemsId',
-//   async (req, res, next) => {
-//     try {
-//       const { shoppingCartItemsId } = req.params;
-//       const { seriesId, quantity } = req.body;
-//       const sql = `
-//       update "shoppingCartItems"
-//       set "seriesId" = $1,
-//           "quantity" = $2
-//       where "shoppingCartItemsId" = $3
-//       returning *`;
-//       const params = [seriesId, quantity, shoppingCartItemsId];
-//       const result = await db.query<ShoppingCartItem>(sql, params);
-//       const [shoppingCartItem] = result.rows;
-//       if (!shoppingCartItem) {
-//         throw new ClientError(
-//           404,
-//           `Shopping cart item ${shoppingCartItemsId} not found`
-//         );
-//       }
-//       res.json(shoppingCartItem);
-//     } catch (err) {
-//       next(err);
-//     }
-//   }
-// );
-
-// // delete item from cart
-// app.delete(
-//   '/api/shoppingCartItems/:shoppingCartItemsId',
-//   async (req, res, next) => {
-//     try {
-//       const { shoppingCartItemsId } = req.params;
-//       const sql = `delete from "shoppingCartItems"
-//         where "shoppingCartItemsId" = $1
-//         returning *`;
-//       const params = [shoppingCartItemsId];
-//       const result = await db.query<ShoppingCartItem>(sql, params);
-//       const [deletedItem] = result.rows;
-//       if (!deletedItem) {
-//         throw new ClientError(
-//           404,
-//           `Shopping cart item ${shoppingCartItemsId} not found.`
-//         );
-//       }
-//       res.json(deletedItem);
-//     } catch (err) {
-//       next(err);
-//     }
-//   }
-// );
-
 app.get('*', (req, res) => {
   res.sendFile(path.join(reactStaticDir, 'index.html'));
 });
@@ -283,3 +200,15 @@ app.use(errorMiddleware);
 app.listen(process.env.PORT, () => {
   console.log('Listening on port', process.env.PORT);
 });
+
+//   if (!price) {
+//   const sql2 = `
+// select "price" from "smiskis"
+// where "seriesId" = $1`;
+//   const params2 = [seriesId];
+//   const result2 = await db.query(sql2, params2);
+//   const getPrice = result2.rows[0]?.price;
+//   if (getPrice === undefined) {
+//     throw new ClientError(404, 'Price not found');
+//   }
+// }

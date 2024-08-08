@@ -90,7 +90,6 @@ export function SeriesDetails() {
   }
 
   const seriesDetailsBanner = (seriesId: string | undefined) => {
-    console.log('series ID', seriesId);
     switch (seriesId) {
       case '1':
         return '/images/series1cover2.webp';

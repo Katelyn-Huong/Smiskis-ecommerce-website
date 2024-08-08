@@ -10,7 +10,8 @@ create schema "public";
 CREATE TABLE "series" (
   "seriesId" serial PRIMARY KEY,
   "name" varchar(50),
-  "imageUrl" varchar(255)
+  "imageUrl" varchar(255),
+  "price" int
 );
 
 
@@ -22,6 +23,7 @@ CREATE TABLE "smiskis" (
   "found" varchar(100),
   "description" text,
    "imageUrl" varchar(255)
+
 );
 
 CREATE TABLE "shoppingCartItems" (
