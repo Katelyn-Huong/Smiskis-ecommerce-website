@@ -110,6 +110,11 @@ export function CheckoutPage() {
     }
   }
 
+  let totalQuantity = 0;
+  for (let i = 0; i < cartItems.length; i++) {
+    totalQuantity += cartItems[i].quantity;
+  }
+
   return (
     <div className="min-h-screen p-4 bg-purple-200">
       <button
@@ -118,9 +123,7 @@ export function CheckoutPage() {
         Back
       </button>
       <h1 className="mb-4 text-3xl font-bold text-center">Shopping Cart</h1>
-      <p className="mb-4 text-lg text-center">
-        Total Items: {cartItems.length}
-      </p>
+      <p className="mb-4 text-lg text-center">Total Items: {totalQuantity}</p>
       <div className="space-y-3">
         {cartItems.map((item) => (
           <div
