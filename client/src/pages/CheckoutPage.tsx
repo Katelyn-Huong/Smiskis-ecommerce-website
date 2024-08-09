@@ -126,56 +126,68 @@ export function CheckoutPage() {
         Back
       </button>
       <h1 className="mb-4 text-3xl font-bold text-center">Shopping Cart</h1>
-      <p className="mb-4 text-lg text-center">Total Items: {totalQuantity}</p>
-      <div className="space-y-3">
-        {cartItems.map((item) => (
-          <div
-            key={item.shoppingCartItemsId}
-            className="flex items-center p-4 bg-white rounded shadow">
-            <img
-              src={item.imageUrl}
-              alt={`Series ${item.seriesId}`}
-              className="object-cover w-40 mr-4 h-30"
-            />
-            <div className="flex-grow">
-              <h2 className="text-lg font-bold">Series {item.seriesId}</h2>
-              <p>Quantity: {item.quantity}</p>
-              <p className="mb-4 text-lg text-right">
-                Subtotal: ${(item.price * item.quantity).toFixed(2)}
-              </p>
-
-              <div className="flex items-center mt-2">
-                <button
-                  onClick={() =>
-                    handleSubtractQuantity(item.shoppingCartItemsId)
-                  }
-                  className="px-2 py-1 bg-gray-300 rounded">
-                  -
-                </button>
-                <span className="px-2 mx-2">{item.quantity}</span>
-                <button
-                  onClick={() => handleAddQuantity(item.shoppingCartItemsId)}
-                  className="px-2 py-1 bg-gray-300 rounded">
-                  +
-                </button>
-              </div>
-              <button
-                onClick={() => handleDelete(item.shoppingCartItemsId)}
-                className="mt-2 text-red-500 underline">
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="mt-8 text-center">
-        <p className="mb-4 text-xl text-right">
-          Total: ${totalPrice.toFixed(2)}
+      {cartItems.length === 0 ? (
+        <p className="text-xl text-center text-gray-600">
+          Cart is empty! Keep Shopping!
         </p>
-        <button className="px-8 py-3 text-white bg-pink-500 rounded">
-          Checkout
-        </button>
-      </div>
+      ) : (
+        <>
+          <p className="mb-4 text-lg text-center">
+            Total Items: {totalQuantity}
+          </p>
+          <div className="space-y-3">
+            {cartItems.map((item) => (
+              <div
+                key={item.shoppingCartItemsId}
+                className="flex items-center p-4 bg-white rounded shadow">
+                <img
+                  src={item.imageUrl}
+                  alt={`Series ${item.seriesId}`}
+                  className="object-cover w-40 mr-4 h-30"
+                />
+                <div className="flex-grow">
+                  <h2 className="text-lg font-bold">Series {item.seriesId}</h2>
+                  <p>Quantity: {item.quantity}</p>
+                  <p className="mb-4 text-lg text-right">
+                    Subtotal: ${(item.price * item.quantity).toFixed(2)}
+                  </p>
+
+                  <div className="flex items-center mt-2">
+                    <button
+                      onClick={() =>
+                        handleSubtractQuantity(item.shoppingCartItemsId)
+                      }
+                      className="px-2 py-1 bg-gray-300 rounded">
+                      -
+                    </button>
+                    <span className="px-2 mx-2">{item.quantity}</span>
+                    <button
+                      onClick={() =>
+                        handleAddQuantity(item.shoppingCartItemsId)
+                      }
+                      className="px-2 py-1 bg-gray-300 rounded">
+                      +
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => handleDelete(item.shoppingCartItemsId)}
+                    className="mt-2 text-red-500 underline">
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 text-center">
+            <p className="mb-4 text-xl text-right">
+              Total: ${totalPrice.toFixed(2)}
+            </p>
+            <button className="px-8 py-3 text-white bg-pink-500 rounded">
+              Checkout
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
