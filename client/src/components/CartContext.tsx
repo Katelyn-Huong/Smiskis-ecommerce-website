@@ -1,20 +1,15 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
 
 export type CartItem = {
+  shoppingCartItemsId: number;
   seriesId: number;
   quantity: number;
   imageUrl: string;
+  price: number;
 };
 
-type CartItemType = {
-  cartItems: CartItem[];
-  addToCart: (item: CartItem) => void;
-  updateCart: (item: CartItem) => void;
-  removeFromCart: (seriesId: number) => void;
-  emptyCart: () => void;
-};
 const defaultCartValue: CartItemType = {
-  cartItems: [],
+  cartItems: undefined,
   addToCart: () => undefined,
   updateCart: () => undefined,
   removeFromCart: () => undefined,
@@ -27,6 +22,13 @@ type Props = {
   children: ReactNode;
 };
 
+export type CartItemType = {
+  cartItems: CartItem[] | undefined;
+  addToCart: (item: CartItem) => void;
+  updateCart: (seriesId: number, newQuantity: number) => void;
+  removeFromCart: (seriesId: number) => void;
+  emptyCart: () => void;
+};
 export function CartProvider({ children }: Props) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
@@ -47,25 +49,71 @@ export function CartProvider({ children }: Props) {
   }, []);
 
   function addToCart(item: CartItem) {
-    const updatedCart = [...cartItems, item];
-    setCartItems(updatedCart);
+    setCartItems((prevItems) => {
+      const existingItem = prevItems.find(
+        (cartItem) => cartItem.seriesId === item.seriesId
+      );
+      if (existingItem) {
+        return prevItems.map((cartItem) =>
+          cartItem.seriesId === item.seriesId
+            ? { ...cartItem, quantity: cartItem.quantity + item.quantity }
+            : cartItem
+        );
+      } else {
+        return [...prevItems, item];
+      }
+    });
   }
-  function updateCart(item: CartItem) {
-    const updatedCart = cartItems.map((cartItem) =>
-      cartItem.seriesId === item.seriesId ? item : cartItem
+
+  function updateCart(seriesId: number, newQuantity: number) {
+    setCartItems((prevItems) =>
+      prevItems.map((cartItem) =>
+        cartItem.seriesId === seriesId
+          ? { ...cartItem, quantity: newQuantity }
+          : cartItem
+      )
     );
-    setCartItems(updatedCart);
   }
-  function removeFromCart(seriesId: number) {
-    const updatedCart = cartItems.filter(
-      (cartItem) => cartItem.seriesId !== seriesId
-    );
-    setCartItems(updatedCart);
+
+  async function removeFromCart(shoppingCartItemsId: number) {
+    try {
+      const response = await fetch(
+        `/api/shoppingCartItems/${shoppingCartItemsId}`,
+        {
+          method: 'DELETE',
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete cart item: ${response.status}`);
+      }
+
+      setCartItems((prevItems) =>
+        prevItems.filter(
+          (cartItem) => cartItem.shoppingCartItemsId !== shoppingCartItemsId
+        )
+      );
+    } catch (err) {
+      console.error('Error deleting cart item:', err);
+    }
   }
-  function emptyCart() {
-    const updatedCart: CartItem[] = [];
-    setCartItems(updatedCart);
+
+  async function emptyCart() {
+    try {
+      const response = await fetch(`/api/shoppingCartItems`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to delete all cart items: ${response.status}`);
+      }
+
+      setCartItems([]);
+    } catch (err) {
+      console.error('Error emptying cart:', err);
+    }
   }
+
   return (
     <CartContext.Provider
       value={{ cartItems, addToCart, updateCart, removeFromCart, emptyCart }}>

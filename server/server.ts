@@ -5,7 +5,6 @@ import pg from 'pg';
 import path from 'path';
 import { ClientError, errorMiddleware } from './lib/index.js';
 import { Series, Smiskis, ShoppingCartItem } from './lib/data.js';
-import { deepStrictEqual } from 'assert';
 
 const db = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -191,6 +190,29 @@ app.delete(
   }
 );
 
+// delete item in cart with seriesId
+app.delete('/api/shoppingCartItems/:seriesId', async (req, res, next) => {
+  try {
+    const { seriesId } = req.params;
+    const sql = `
+    DELETE FROM "shoppingCartItems"
+    WHERE "seriesId" = $1
+    RETURNING *`;
+    const params = [seriesId];
+    const result = await db.query(sql, params);
+    const [deletedItem] = result.rows;
+    if (!deletedItem) {
+      throw new ClientError(
+        404,
+        `Shopping cart item with seriesId ${seriesId} not found`
+      );
+    }
+    res.json(deletedItem);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(reactStaticDir, 'index.html'));
 });
@@ -200,15 +222,3 @@ app.use(errorMiddleware);
 app.listen(process.env.PORT, () => {
   console.log('Listening on port', process.env.PORT);
 });
-
-//   if (!price) {
-//   const sql2 = `
-// select "price" from "smiskis"
-// where "seriesId" = $1`;
-//   const params2 = [seriesId];
-//   const result2 = await db.query(sql2, params2);
-//   const getPrice = result2.rows[0]?.price;
-//   if (getPrice === undefined) {
-//     throw new ClientError(404, 'Price not found');
-//   }
-// }
