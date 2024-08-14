@@ -11,7 +11,7 @@ export function SeriesDetails() {
   const [err, setErr] = useState<unknown>();
   const { seriesId } = useParams();
   const navigate = useNavigate();
-  const { addToCart, updateCart } = useCart();
+  const { addToCart, updateCart, cartItems } = useCart();
 
   useEffect(() => {
     async function getSeriesDetails() {
@@ -60,18 +60,20 @@ export function SeriesDetails() {
 
   async function handleAddToCart() {
     try {
-      const cartCheckoutResponse = await fetch('/api/shoppingCartItems');
-      if (!cartCheckoutResponse.ok)
-        throw new Error(`Response status ${cartCheckoutResponse.status}`);
-      const cartItems = (await cartCheckoutResponse.json()) as {
-        seriesId: number;
-        quantity: number;
-        shoppingCartItemsId: number;
-      }[];
-      const existingCartItems = cartItems.find(
+      // const cartCheckoutResponse = await fetch('/api/shoppingCartItems');
+      // if (!cartCheckoutResponse.ok)
+      //   throw new Error(`Response status ${cartCheckoutResponse.status}`);
+      // const cartItems = (await cartCheckoutResponse.json()) as {
+      //   seriesId: number;
+      //   quantity: number;
+      //   shoppingCartItemsId: number;
+      // }[];
+      // const existingCartItems = cartItems.find(
+      //   (item) => item.seriesId === Number(seriesId)
+      // );
+      const existingCartItems = cartItems?.find(
         (item) => item.seriesId === Number(seriesId)
       );
-
       if (!seriesInfo) {
         throw new Error('Series information not found.');
       }
@@ -80,20 +82,20 @@ export function SeriesDetails() {
 
       if (existingCartItems) {
         const newQuantity = existingCartItems.quantity + quantity;
-        const updateCartCheckoutResponse = await fetch(
-          `/api/shoppingCartItems/${existingCartItems.seriesId}`,
-          {
-            method: 'PUT',
-            headers: {
-              'Content-type': 'application/json',
-            },
-            body: JSON.stringify({ quantity: newQuantity }),
-          }
-        );
-        if (!updateCartCheckoutResponse.ok)
-          throw new Error(
-            `Response status ${updateCartCheckoutResponse.status}`
-          );
+        // const updateCartCheckoutResponse = await fetch(
+        //   `/api/shoppingCartItems/${existingCartItems.seriesId}`,
+        //   {
+        //     method: 'PUT',
+        //     headers: {
+        //       'Content-type': 'application/json',
+        //     },
+        //     body: JSON.stringify({ quantity: newQuantity }),
+        //   }
+        // );
+        // if (!updateCartCheckoutResponse.ok)
+        //   throw new Error(
+        //     `Response status ${updateCartCheckoutResponse.status}`
+        //   );
         updateCart(existingCartItems.seriesId, newQuantity);
       } else {
         const imageUrl = seriesDetailsBanner(seriesId);

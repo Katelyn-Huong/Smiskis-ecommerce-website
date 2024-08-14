@@ -65,14 +65,30 @@ export function CartProvider({ children }: Props) {
     });
   }
 
-  function updateCart(seriesId: number, newQuantity: number) {
-    setCartItems((prevItems) =>
-      prevItems.map((cartItem) =>
-        cartItem.seriesId === seriesId
-          ? { ...cartItem, quantity: newQuantity }
-          : cartItem
-      )
-    );
+  async function updateCart(seriesId: number, newQuantity: number) {
+    try {
+      const updateCartCheckoutResponse = await fetch(
+        `/api/shoppingCartItems/${seriesId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-type': 'application/json',
+          },
+          body: JSON.stringify({ quantity: newQuantity }),
+        }
+      );
+      if (!updateCartCheckoutResponse.ok)
+        throw new Error(`Response status ${updateCartCheckoutResponse.status}`);
+      setCartItems((prevItems) =>
+        prevItems.map((cartItem) =>
+          cartItem.seriesId === seriesId
+            ? { ...cartItem, quantity: newQuantity }
+            : cartItem
+        )
+      );
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   // update database when component unmount

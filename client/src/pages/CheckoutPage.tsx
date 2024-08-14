@@ -135,7 +135,7 @@ export function CheckoutPage() {
               Total: ${totalPrice.toFixed(2)}
             </p>
 
-            <button className="px-8 py-3 ml-4 text-white bg-pink-500 rounded">
+            <button className="px-8 py-3 ml-4 text-white transition-all duration-300 bg-pink-500 rounded hover:bg-slate-900">
               Checkout
             </button>
           </div>
