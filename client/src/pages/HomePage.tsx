@@ -4,7 +4,7 @@ export function HomePage() {
       <img
         src="/images/smiskisglow.webp"
         alt="smiskis glow"
-        className="mx-auto mb-4"
+        className="mx-auto mb-4 rounded-xl"
       />
       <p className="text-2xl text-center text-white">
         Smiskis are little creatures in blind boxes...

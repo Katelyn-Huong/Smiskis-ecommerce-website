@@ -15,12 +15,12 @@ export function Navbar() {
   return (
     <>
       <div className="flex items-center justify-between p-4 bg-purple-200">
-        <div className="text-2xl font-bold">
+        <div className="text-2xl font-bold hover:scale-105">
           <Link to="/" className="text-3xl text-gray-800">
             Smiskis
           </Link>
         </div>
-        <ul className="flex items-center space-x-4">
+        <ul className="flex items-center space-x-4 ">
           <li>
             <Link
               to="/series"
@@ -32,7 +32,10 @@ export function Navbar() {
             <Link
               to="/checkout"
               className="relative flex items-center text-2xl text-gray-800 no-underline hover:underline">
-              <FontAwesomeIcon icon={faShoppingCart} className="ml-2" />
+              <FontAwesomeIcon
+                icon={faShoppingCart}
+                className="ml-2 duration-300 hover:scale-110"
+              />
               <div className="absolute flex items-center justify-center w-5 h-5 text-xs text-white bg-red-500 rounded-full -top-2 -right-2">
                 {totalItems}
               </div>

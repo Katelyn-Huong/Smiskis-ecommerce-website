@@ -145,7 +145,7 @@ export function SeriesDetails() {
     <div className="grid p-4 bg-purple-200">
       <button
         onClick={() => navigate('/series')}
-        className="absolute px-2 py-1 mt-4 text-xl text-black bg-purple-100 rounded top-12 left-4">
+        className="absolute px-2 py-1 mt-4 text-xl text-black bg-purple-100 rounded top-12 left-4 hover:scale-105">
         Back
       </button>
       <div className="flex flex-col p-4 md:flex-row">
@@ -160,21 +160,21 @@ export function SeriesDetails() {
               <div className="mb-2 text-2xl ">{`$${seriesInfo?.price} USD (1 Blind Box)`}</div>
               <button
                 onClick={handleAddToCart}
-                className="px-4 py-2 text-white bg-pink-500 rounded">
+                className="px-4 py-2 text-white duration-300 bg-pink-500 rounded hover:scale-105">
                 Add to Cart
               </button>
               <div className="flex items-center justify-center mt-4 md:justify-start">
                 <button
                   onClick={handleSubtractQuantity}
-                  className="px-2 bg-white">
+                  className="px-3 bg-white">
                   -
                 </button>
-                <span className="px-2 mx-1 bg-white">{quantity}</span>
-                <button onClick={handleAddQuantity} className="px-2 bg-white">
+                <span className="px-3 mx-1 bg-white">{quantity}</span>
+                <button onClick={handleAddQuantity} className="px-3 bg-white">
                   +
                 </button>
               </div>
-              <div className="mt-2 text-sm text-gray-600">
+              <div className="mt-2 text-xl text-black">
                 *Blind boxes are shipped randomly
               </div>
             </div>

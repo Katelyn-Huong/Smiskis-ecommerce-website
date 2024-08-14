@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { ShoppingCartItem, Series } from '../../../server/lib/data';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../components/useCart';
+import { Modal } from '../components/Modal';
 
 export function CheckoutPage() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<unknown>();
+  const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
   const { cartItems = [], updateCart, removeFromCart } = useCart();
 
@@ -65,6 +67,15 @@ export function CheckoutPage() {
     console.log('seriesId', seriesId);
   }
 
+  function handleCheckout() {
+    setModalOpen(true);
+  }
+
+  function handleCloseModal() {
+    setModalOpen(false);
+    navigate('/');
+  }
+
   let totalQuantity = 0;
   let totalPrice = 0;
 
@@ -78,7 +89,7 @@ export function CheckoutPage() {
     <div className="min-h-screen p-4 bg-purple-200">
       <button
         onClick={() => navigate('/series')}
-        className="absolute px-2 py-1 mt-4 text-xl text-black bg-purple-100 rounded top-12 left-4">
+        className="absolute px-2 py-1 mt-4 text-xl text-black bg-purple-100 rounded top-12 left-4 hover:scale-105">
         Back
       </button>
       <h1 className="mb-4 text-3xl font-bold text-center">Shopping Cart</h1>
@@ -123,7 +134,7 @@ export function CheckoutPage() {
 
                   <button
                     onClick={() => handleDelete(item.seriesId)}
-                    className="mt-2 text-red-500 underline">
+                    className="mt-2 text-red-500 underline hover:scale-105">
                     Delete
                   </button>
                 </div>
@@ -135,12 +146,20 @@ export function CheckoutPage() {
               Total: ${totalPrice.toFixed(2)}
             </p>
 
-            <button className="px-8 py-3 ml-4 text-white transition-all duration-300 bg-pink-500 rounded hover:bg-slate-900">
+            <button
+              onClick={handleCheckout}
+              className="px-8 py-3 ml-4 text-white transition-all duration-300 bg-pink-500 rounded hover-btn">
               Checkout
             </button>
           </div>
         </>
       )}
+      <Modal
+        isVisible={modalOpen}
+        onClose={handleCloseModal}
+        title="Order Completed!"
+        message="Thank you for your purchase!"
+      />
     </div>
   );
 }
