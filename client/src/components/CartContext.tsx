@@ -75,6 +75,9 @@ export function CartProvider({ children }: Props) {
     );
   }
 
+  // update database when component unmount
+  // or update database as soon as add or subtract quantity
+
   async function removeFromCart(shoppingCartItemsId: number) {
     try {
       const response = await fetch(

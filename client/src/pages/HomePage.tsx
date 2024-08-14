@@ -1,6 +1,6 @@
 export function HomePage() {
   return (
-    <div className="grid gap-4 bg-purple-200 ">
+    <div className="grid gap-4 bg-purple-200">
       <img
         src="/images/smiskisglow.webp"
         alt="smiskis glow"
@@ -17,22 +17,23 @@ export function HomePage() {
         <img
           src="/images/yogapose.png"
           alt="yoga pose"
-          className="w-full h-auto mx-auto md:w-60 "
+          className="mx-auto md:w-28 max-h-28"
         />
+
         <img
           src="/images/fightingpose.png"
           alt="fighting pose"
-          className="w-full mx-auto md:w-60 "
+          className="mx-auto md:w-28 max-h-28 "
         />
         <img
           src="/images/cheerpose.png"
           alt="cheer pose"
-          className="w-full h-auto mx-auto md:w-60 "
+          className="mx-auto md:w-28 max-h-28"
         />
         <img
           src="/images/meditatepose.png"
           alt="meditate pose"
-          className="w-full h-auto mx-auto md:w-60 "
+          className="mx-auto md:w-28 max-h-28"
         />
       </div>
     </div>

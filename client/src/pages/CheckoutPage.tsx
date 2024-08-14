@@ -130,7 +130,7 @@ export function CheckoutPage() {
             ))}
           </div>
           <div className="mt-8 text-center">
-            <p className="mb-4 text-xl text-right">
+            <p className="mb-5 text-xl text-right ">
               Total: ${totalPrice.toFixed(2)}
             </p>
 

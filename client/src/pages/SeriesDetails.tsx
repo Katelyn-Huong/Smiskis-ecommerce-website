@@ -140,7 +140,7 @@ export function SeriesDetails() {
   }
 
   return (
-    <div className="grid min-h-screen p-4 bg-purple-200">
+    <div className="grid p-4 bg-purple-200">
       <button
         onClick={() => navigate('/series')}
         className="absolute px-2 py-1 mt-4 text-xl text-black bg-purple-100 rounded top-12 left-4">
