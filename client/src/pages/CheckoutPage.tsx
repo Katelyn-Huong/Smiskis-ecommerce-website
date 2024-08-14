@@ -60,8 +60,9 @@ export function CheckoutPage() {
     }
   }
 
-  function handleDelete(shoppingCartItemsId: number) {
-    removeFromCart(shoppingCartItemsId);
+  function handleDelete(seriesId: number) {
+    removeFromCart(seriesId);
+    console.log('seriesId', seriesId);
   }
 
   let totalQuantity = 0;
@@ -121,7 +122,7 @@ export function CheckoutPage() {
                   </div>
 
                   <button
-                    onClick={() => handleDelete(item.shoppingCartItemsId)}
+                    onClick={() => handleDelete(item.seriesId)}
                     className="mt-2 text-red-500 underline">
                     Delete
                   </button>

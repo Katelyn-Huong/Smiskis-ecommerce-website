@@ -78,23 +78,19 @@ export function CartProvider({ children }: Props) {
   // update database when component unmount
   // or update database as soon as add or subtract quantity
 
-  async function removeFromCart(shoppingCartItemsId: number) {
+  async function removeFromCart(seriesId: number) {
+    console.log('seriesId2', seriesId);
     try {
-      const response = await fetch(
-        `/api/shoppingCartItems/${shoppingCartItemsId}`,
-        {
-          method: 'DELETE',
-        }
-      );
+      const response = await fetch(`/api/shoppingCartItems/${seriesId}`, {
+        method: 'DELETE',
+      });
 
       if (!response.ok) {
         throw new Error(`Failed to delete cart item: ${response.status}`);
       }
 
       setCartItems((prevItems) =>
-        prevItems.filter(
-          (cartItem) => cartItem.shoppingCartItemsId !== shoppingCartItemsId
-        )
+        prevItems.filter((cartItem) => cartItem.seriesId !== seriesId)
       );
     } catch (err) {
       console.error('Error deleting cart item:', err);

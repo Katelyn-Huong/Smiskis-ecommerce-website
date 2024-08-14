@@ -81,7 +81,7 @@ export function SeriesDetails() {
       if (existingCartItems) {
         const newQuantity = existingCartItems.quantity + quantity;
         const updateCartCheckoutResponse = await fetch(
-          `/api/shoppingCartItems/${existingCartItems.shoppingCartItemsId}`,
+          `/api/shoppingCartItems/${existingCartItems.seriesId}`,
           {
             method: 'PUT',
             headers: {
