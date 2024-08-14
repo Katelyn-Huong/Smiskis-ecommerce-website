@@ -1,10 +1,10 @@
 
 
-INSERT INTO "series" ("name", "imageUrl") VALUES
-('Series 1', '/images/series/series1cover.png'),
-('Series 2','/images/series/series2cover.png'),
-('Series 3','/images/series/series3cover.png'),
-('Series 4','/images/series/series4cover.png');
+INSERT INTO "series" ("name", "imageUrl", "price") VALUES
+('Series 1', '/images/series/series1cover.png', 10),
+('Series 2','/images/series/series2cover.png', 10),
+('Series 3','/images/series/series3cover.png', 10),
+('Series 4','/images/series/series4cover.png', 10);
 
 INSERT INTO "smiskis" ("seriesId", "bodyType", "pose", "found", "description", "imageUrl") VALUES
 (1, 'Normal', 'Kneeling', 'In corners of a room', 'Always in the corner hugging onto the knees, staring out into the distance pensive in thought.', '/images/series1/huggingknees.png'),
@@ -33,5 +33,9 @@ INSERT INTO "smiskis" ("seriesId", "bodyType", "pose", "found", "description", "
 (4, 'Slim', 'Defeated', 'In corners of a room', 'A Smiski that is defeated because it cannot find any favorite corner. Sometimes used as a stepping stone for other Smiski.', '/images/series4/defeated.png');
 
 
-INSERT INTO "shoppingCartItems" ("seriesId", "quantity", "createdAt")
-VALUES (1, 2, NOW());
+INSERT INTO "shoppingCartItems" ("seriesId", "quantity", "imageUrl","createdAt")
+VALUES
+(1, 2,'/images/series/series1cover.png', NOW()),
+(2, 3, '/images/series/series2cover.png',  NOW()),
+(3, 4, '/images/series/series3cover.png',  NOW()),
+(4, 5, '/images/series/series4cover.png',  NOW());

@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
-import { Smiskis } from '../../../server/lib/data';
+import { Smiskis, Series } from '../../../server/lib/data';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useCart } from '../components/useCart';
 
 export function SeriesDetails() {
   const [seriesDetails, setSeriesDetails] = useState<Smiskis[]>([]);
+  const [seriesInfo, setSeriesInfo] = useState<Series | null>(null); // State to hold series info
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [err, setErr] = useState<unknown>();
   const { seriesId } = useParams();
   const navigate = useNavigate();
+  const { addToCart, updateCart } = useCart();
 
   useEffect(() => {
     async function getSeriesDetails() {
@@ -17,6 +20,12 @@ export function SeriesDetails() {
         if (!response.ok) throw new Error(`Response status ${response.status}`);
         const smiskis = (await response.json()) as Smiskis[];
         setSeriesDetails(smiskis);
+
+        const seriesResponse = await fetch(`/api/series/${seriesId}`);
+        if (!seriesResponse.ok)
+          throw new Error(`Response status ${seriesResponse.status}`);
+        const seriesData = (await seriesResponse.json()) as Series;
+        setSeriesInfo(seriesData);
       } catch (err) {
         setErr(err);
       } finally {
@@ -25,31 +34,6 @@ export function SeriesDetails() {
     }
     getSeriesDetails();
   }, [seriesId]);
-
-  function handleAddQuantity() {
-    const addQuantity = quantity + 1;
-    setQuantity(addQuantity);
-  }
-
-  function handleSubtractQuantity() {
-    let subtractQuantity = quantity - 1;
-    if (subtractQuantity < 1) {
-      subtractQuantity = 1;
-    }
-    setQuantity(subtractQuantity);
-  }
-
-  async function handleAddToCart() {
-    try {
-      const response = await fetch('/api/shoppingCartItems', {
-        method: 'POST',
-      });
-      if (!response.ok) throw new Error(`Response status ${response.status}`);
-      alert('Added to cart!');
-    } catch (err) {
-      setErr(err);
-    }
-  }
 
   const seriesDetailsBanner = (seriesId: string | undefined) => {
     switch (seriesId) {
@@ -61,8 +45,86 @@ export function SeriesDetails() {
         return '/images/series3cover2.webp';
       case '4':
         return '/images/series4cover22.webp';
+      default:
+        return '';
     }
   };
+
+  function handleAddQuantity() {
+    setQuantity((prevQuantity) => prevQuantity + 1);
+  }
+
+  function handleSubtractQuantity() {
+    setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
+  }
+
+  async function handleAddToCart() {
+    try {
+      const cartCheckoutResponse = await fetch('/api/shoppingCartItems');
+      if (!cartCheckoutResponse.ok)
+        throw new Error(`Response status ${cartCheckoutResponse.status}`);
+      const cartItems = (await cartCheckoutResponse.json()) as {
+        seriesId: number;
+        quantity: number;
+        shoppingCartItemsId: number;
+      }[];
+      const existingCartItems = cartItems.find(
+        (item) => item.seriesId === Number(seriesId)
+      );
+
+      if (!seriesInfo) {
+        throw new Error('Series information not found.');
+      }
+
+      const price = seriesInfo.price;
+
+      if (existingCartItems) {
+        const newQuantity = existingCartItems.quantity + quantity;
+        const updateCartCheckoutResponse = await fetch(
+          `/api/shoppingCartItems/${existingCartItems.shoppingCartItemsId}`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-type': 'application/json',
+            },
+            body: JSON.stringify({ quantity: newQuantity }),
+          }
+        );
+        if (!updateCartCheckoutResponse.ok)
+          throw new Error(
+            `Response status ${updateCartCheckoutResponse.status}`
+          );
+        updateCart(existingCartItems.seriesId, newQuantity);
+      } else {
+        const imageUrl = seriesDetailsBanner(seriesId);
+        const response = await fetch('/api/shoppingCartItems', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            seriesId: seriesId,
+            quantity: quantity,
+            imageUrl: imageUrl,
+            price: price,
+          }),
+        });
+        if (!response.ok) throw new Error(`Response status ${response.status}`);
+
+        const newItem = await response.json();
+        addToCart({
+          shoppingCartItemsId: newItem.shoppingCartItemsId,
+          seriesId: Number(seriesId),
+          quantity,
+          imageUrl: imageUrl!,
+          price: price,
+        });
+      }
+      alert('Added to cart!');
+    } catch (err) {
+      setErr(err);
+    }
+  }
 
   if (loading) {
     return (
@@ -93,7 +155,7 @@ export function SeriesDetails() {
               className="w-full h-auto mt-6 mb-6"
             />
             <div className="p-3 mt-10 text-center md:text-left">
-              <div className="mb-2 text-2xl ">$10.00 USD (1 Blind Box)</div>
+              <div className="mb-2 text-2xl ">{`$${seriesInfo?.price} USD (1 Blind Box)`}</div>
               <button
                 onClick={handleAddToCart}
                 className="px-4 py-2 text-white bg-pink-500 rounded">

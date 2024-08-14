@@ -2,6 +2,7 @@ export type Series = {
   seriesId: number;
   name: string;
   imageUrl: string;
+  price: number;
 };
 export type Smiskis = {
   smiskisId: number;
@@ -17,5 +18,6 @@ export type ShoppingCartItem = {
   shoppingCartItemsId: number;
   seriesId: number;
   quantity: number;
+  imageUrl: string;
   createdAt: string;
 };

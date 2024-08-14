@@ -17,22 +17,22 @@ export function HomePage() {
         <img
           src="/images/yogapose.png"
           alt="yoga pose"
-          className="w-full h-auto mx-auto md:w-60 md:h-60"
+          className="w-full h-auto mx-auto md:w-60 "
         />
         <img
           src="/images/fightingpose.png"
           alt="fighting pose"
-          className="w-full h-auto mx-auto md:w-60 md:h-60"
+          className="w-full mx-auto md:w-60 "
         />
         <img
           src="/images/cheerpose.png"
           alt="cheer pose"
-          className="w-full h-auto mx-auto md:w-60 md:h-60"
+          className="w-full h-auto mx-auto md:w-60 "
         />
         <img
           src="/images/meditatepose.png"
           alt="meditate pose"
-          className="w-full h-auto mx-auto md:w-60 md:h-60"
+          className="w-full h-auto mx-auto md:w-60 "
         />
       </div>
     </div>

@@ -10,7 +10,8 @@ create schema "public";
 CREATE TABLE "series" (
   "seriesId" serial PRIMARY KEY,
   "name" varchar(50),
-  "imageUrl" varchar(255)
+  "imageUrl" varchar(255),
+  "price" int
 );
 
 
@@ -22,17 +23,17 @@ CREATE TABLE "smiskis" (
   "found" varchar(100),
   "description" text,
    "imageUrl" varchar(255)
+
 );
 
 CREATE TABLE "shoppingCartItems" (
   "shoppingCartItemsId" serial PRIMARY KEY,
   "seriesId" int,
   "quantity" int,
+  "imageUrl" varchar(255),
   "createdAt" timestamp NOT NULL DEFAULT (now())
 );
 
--- ALTER TABLE "series"
--- ADD COLUMN "imageUrl" varchar(255);
 
 ALTER TABLE "smiskis" ADD FOREIGN KEY ("seriesId") REFERENCES "series" ("seriesId");
 
