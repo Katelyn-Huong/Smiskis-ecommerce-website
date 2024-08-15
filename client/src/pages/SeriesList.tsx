@@ -38,20 +38,19 @@ export function SeriesList() {
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-4 bg-purple-200 ">
-      <h1 className="mb-8 text-2xl font-bold">Series</h1>
-      <div className="grid grid-cols-1 gap-10 bg-purple-100 md:grid-cols-2 lg:grid-cols-2 ">
+    <div className="flex flex-col items-center p-4 bg-purple-200 ">
+      <h1 className="mb-8 text-3xl font-bold">Series</h1>
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-2 ">
         {series.map((smiskiseries) => (
           <div
             key={smiskiseries.seriesId}
-            className="p-4 border rounded shadow hover:shadow-lg">
+            className="p-4 bg-purple-100 border rounded shadow hover:shadow-lg hover:scale-110">
             <Link to={`/series/${smiskiseries.seriesId}`}>
               <img
                 src={smiskiseries.imageUrl}
                 alt={`Series ${smiskiseries.seriesId}`}
                 className="object-cover w-full h-auto mb-2 rounded "
               />
-              <h2 className="text-xl font-bold">{smiskiseries.name}</h2>
             </Link>
           </div>
         ))}

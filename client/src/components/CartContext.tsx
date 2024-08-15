@@ -65,33 +65,45 @@ export function CartProvider({ children }: Props) {
     });
   }
 
-  function updateCart(seriesId: number, newQuantity: number) {
-    setCartItems((prevItems) =>
-      prevItems.map((cartItem) =>
-        cartItem.seriesId === seriesId
-          ? { ...cartItem, quantity: newQuantity }
-          : cartItem
-      )
-    );
-  }
-
-  async function removeFromCart(shoppingCartItemsId: number) {
+  async function updateCart(seriesId: number, newQuantity: number) {
     try {
-      const response = await fetch(
-        `/api/shoppingCartItems/${shoppingCartItemsId}`,
+      const updateCartCheckoutResponse = await fetch(
+        `/api/shoppingCartItems/${seriesId}`,
         {
-          method: 'DELETE',
+          method: 'PUT',
+          headers: {
+            'Content-type': 'application/json',
+          },
+          body: JSON.stringify({ quantity: newQuantity }),
         }
       );
+      if (!updateCartCheckoutResponse.ok)
+        throw new Error(`Response status ${updateCartCheckoutResponse.status}`);
+      setCartItems((prevItems) =>
+        prevItems.map((cartItem) =>
+          cartItem.seriesId === seriesId
+            ? { ...cartItem, quantity: newQuantity }
+            : cartItem
+        )
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function removeFromCart(seriesId: number) {
+    console.log('seriesId2', seriesId);
+    try {
+      const response = await fetch(`/api/shoppingCartItems/${seriesId}`, {
+        method: 'DELETE',
+      });
 
       if (!response.ok) {
         throw new Error(`Failed to delete cart item: ${response.status}`);
       }
 
       setCartItems((prevItems) =>
-        prevItems.filter(
-          (cartItem) => cartItem.shoppingCartItemsId !== shoppingCartItemsId
-        )
+        prevItems.filter((cartItem) => cartItem.seriesId !== seriesId)
       );
     } catch (err) {
       console.error('Error deleting cart item:', err);

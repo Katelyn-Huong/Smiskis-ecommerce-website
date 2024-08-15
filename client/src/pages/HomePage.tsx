@@ -1,40 +1,40 @@
+import { useState, useEffect } from 'react';
+
 export function HomePage() {
+  const images = [
+    '/images/yogapose.png',
+    '/images/fightingpose.png',
+    '/images/cheerpose.png',
+    '/images/meditatepose.png',
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, [images.length]);
+
   return (
-    <div className="grid gap-4 bg-purple-200 ">
+    <div className="grid gap-4 bg-purple-200">
       <img
-        src="/images/smiskisglow.webp"
-        alt="smiskis glow"
-        className="mx-auto mb-4"
+        src="/images/smiskisglow inthedarkbanner.gif"
+        alt="smiskis glowing"
+        className="mx-auto mb-4 rounded-xl "
       />
-      <p className="text-2xl text-center text-white">
-        Smiskis are little creatures in blind boxes...
+      <p className="text-xl text-center text-gray-800">
+        Little mysterious creatures that lives in blind boxes and appears at
+        night...
       </p>
-      <p className="text-2xl text-center text-white">
-        That hides everywhere...
-      </p>
-      <p className="text-2xl text-center text-white">And appears at night!</p>
-      <div className="grid grid-cols-2 gap-4 mt-8 md:grid-cols-2 lg:grid-cols-2">
-        <img
-          src="/images/yogapose.png"
-          alt="yoga pose"
-          className="w-full h-auto mx-auto md:w-60 "
-        />
-        <img
-          src="/images/fightingpose.png"
-          alt="fighting pose"
-          className="w-full mx-auto md:w-60 "
-        />
-        <img
-          src="/images/cheerpose.png"
-          alt="cheer pose"
-          className="w-full h-auto mx-auto md:w-60 "
-        />
-        <img
-          src="/images/meditatepose.png"
-          alt="meditate pose"
-          className="w-full h-auto mx-auto md:w-60 "
-        />
-      </div>
+
+      <img
+        src={images[currentIndex]}
+        alt="smiskis pose"
+        className="mx-auto mb-4 rounded-xl md:w-56 max-h-56"
+      />
     </div>
   );
 }

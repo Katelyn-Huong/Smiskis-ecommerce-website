@@ -5,13 +5,14 @@ import { useCart } from '../components/useCart';
 
 export function SeriesDetails() {
   const [seriesDetails, setSeriesDetails] = useState<Smiskis[]>([]);
-  const [seriesInfo, setSeriesInfo] = useState<Series | null>(null); // State to hold series info
+  const [seriesInfo, setSeriesInfo] = useState<Series | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [err, setErr] = useState<unknown>();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { seriesId } = useParams();
   const navigate = useNavigate();
-  const { addToCart, updateCart } = useCart();
+  const { addToCart, updateCart, cartItems } = useCart();
 
   useEffect(() => {
     async function getSeriesDetails() {
@@ -38,17 +39,35 @@ export function SeriesDetails() {
   const seriesDetailsBanner = (seriesId: string | undefined) => {
     switch (seriesId) {
       case '1':
-        return '/images/series1cover2.webp';
+        return {
+          primary: '/images/series1cover2.webp',
+          secondary: '/images/series1blindbox.png',
+        };
       case '2':
-        return '/images/series2cover2.png';
+        return {
+          primary: '/images/series2cover2.png',
+          secondary: '/images/series2blindbox.png',
+        };
       case '3':
-        return '/images/series3cover2.webp';
+        return {
+          primary: '/images/series3cover2.webp',
+          secondary: '/images/series3blindbox.png',
+        };
       case '4':
-        return '/images/series4cover22.webp';
+        return {
+          primary: '/images/series4cover22.webp',
+          secondary: '/images/series4blindbox.png',
+        };
       default:
-        return '';
+        return {
+          primary: '',
+          secondary: '',
+        };
     }
   };
+
+  const bannerImages = seriesDetailsBanner(seriesId);
+  const images = [bannerImages.primary, bannerImages.secondary];
 
   function handleAddQuantity() {
     setQuantity((prevQuantity) => prevQuantity + 1);
@@ -60,18 +79,9 @@ export function SeriesDetails() {
 
   async function handleAddToCart() {
     try {
-      const cartCheckoutResponse = await fetch('/api/shoppingCartItems');
-      if (!cartCheckoutResponse.ok)
-        throw new Error(`Response status ${cartCheckoutResponse.status}`);
-      const cartItems = (await cartCheckoutResponse.json()) as {
-        seriesId: number;
-        quantity: number;
-        shoppingCartItemsId: number;
-      }[];
-      const existingCartItems = cartItems.find(
+      const existingCartItems = cartItems?.find(
         (item) => item.seriesId === Number(seriesId)
       );
-
       if (!seriesInfo) {
         throw new Error('Series information not found.');
       }
@@ -80,23 +90,10 @@ export function SeriesDetails() {
 
       if (existingCartItems) {
         const newQuantity = existingCartItems.quantity + quantity;
-        const updateCartCheckoutResponse = await fetch(
-          `/api/shoppingCartItems/${existingCartItems.shoppingCartItemsId}`,
-          {
-            method: 'PUT',
-            headers: {
-              'Content-type': 'application/json',
-            },
-            body: JSON.stringify({ quantity: newQuantity }),
-          }
-        );
-        if (!updateCartCheckoutResponse.ok)
-          throw new Error(
-            `Response status ${updateCartCheckoutResponse.status}`
-          );
+
         updateCart(existingCartItems.seriesId, newQuantity);
       } else {
-        const imageUrl = seriesDetailsBanner(seriesId);
+        const imageUrl = bannerImages.primary;
         const response = await fetch('/api/shoppingCartItems', {
           method: 'POST',
           headers: {
@@ -140,39 +137,53 @@ export function SeriesDetails() {
   }
 
   return (
-    <div className="grid min-h-screen p-4 bg-purple-200">
+    <div className="grid p-4 bg-purple-200">
       <button
         onClick={() => navigate('/series')}
-        className="absolute px-2 py-1 mt-4 text-xl text-black bg-purple-100 rounded top-12 left-4">
+        className="absolute px-2 py-1 mt-4 text-xl text-black bg-purple-100 rounded top-12 left-4 hover:scale-105">
         Back
       </button>
-      <div className="flex flex-col p-4 md:flex-row">
+      <div className="flex flex-col p-5 md:flex-row">
         <div className="w-full pr-4 md:w-1/3">
-          <div className="container mx-auto ">
-            <img
-              src={seriesDetailsBanner(seriesId)}
-              alt={`series ${seriesId} banner`}
-              className="w-full h-auto mt-6 mb-6"
-            />
-            <div className="p-3 mt-10 text-center md:text-left">
+          <div className="container mx-auto">
+            <div className="relative">
+              <div className="object-cover w-full h-64">
+                <img
+                  src={images[currentImageIndex]}
+                  alt={`series ${seriesId} banner`}
+                  className="object-cover w-full "
+                />
+              </div>
+              <div className="absolute left-0 flex flex-col ml-2 space-y-2 transform -translate-y-1/2 top-1/2">
+                {images.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`w-2 h-2 rounded-full ${
+                      currentImageIndex === index ? 'bg-black' : 'bg-gray-300'
+                    }`}
+                    onClick={() => setCurrentImageIndex(index)}></button>
+                ))}
+              </div>
+            </div>
+            <div className="p-3 mt-20 text-center md:text-left">
               <div className="mb-2 text-2xl ">{`$${seriesInfo?.price} USD (1 Blind Box)`}</div>
               <button
                 onClick={handleAddToCart}
-                className="px-4 py-2 text-white bg-pink-500 rounded">
+                className="px-4 py-2 text-white duration-300 bg-pink-500 rounded hover:scale-105">
                 Add to Cart
               </button>
               <div className="flex items-center justify-center mt-4 md:justify-start">
                 <button
                   onClick={handleSubtractQuantity}
-                  className="px-2 bg-white">
+                  className="px-3 bg-white">
                   -
                 </button>
-                <span className="px-2 mx-1 bg-white">{quantity}</span>
-                <button onClick={handleAddQuantity} className="px-2 bg-white">
+                <span className="px-3 mx-1 bg-white">{quantity}</span>
+                <button onClick={handleAddQuantity} className="px-3 bg-white">
                   +
                 </button>
               </div>
-              <div className="mt-2 text-sm text-gray-600">
+              <div className="mt-2 text-xl text-black">
                 *Blind boxes are shipped randomly
               </div>
             </div>
