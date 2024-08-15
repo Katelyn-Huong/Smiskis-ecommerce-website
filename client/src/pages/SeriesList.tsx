@@ -51,7 +51,6 @@ export function SeriesList() {
                 alt={`Series ${smiskiseries.seriesId}`}
                 className="object-cover w-full h-auto mb-2 rounded "
               />
-              {/* <h2 className="text-xl font-bold">{smiskiseries.name}</h2> */}
             </Link>
           </div>
         ))}

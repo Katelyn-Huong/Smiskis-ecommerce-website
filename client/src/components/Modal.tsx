@@ -1,5 +1,3 @@
-import React from 'react';
-
 export type ModalProps = {
   isVisible: boolean;
   onClose: () => void;

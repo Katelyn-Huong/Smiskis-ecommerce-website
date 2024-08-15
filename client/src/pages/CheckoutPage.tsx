@@ -64,7 +64,6 @@ export function CheckoutPage() {
 
   function handleDelete(seriesId: number) {
     removeFromCart(seriesId);
-    console.log('seriesId', seriesId);
   }
 
   function handleCheckout() {
@@ -112,6 +111,7 @@ export function CheckoutPage() {
                   alt={`Series ${item.seriesId}`}
                   className="object-cover w-40 mr-4 h-30"
                 />
+
                 <div className="flex-grow">
                   <h2 className="text-lg font-bold">Series {item.seriesId}</h2>
                   <p>Quantity: {item.quantity}</p>

@@ -91,9 +91,6 @@ export function CartProvider({ children }: Props) {
     }
   }
 
-  // update database when component unmount
-  // or update database as soon as add or subtract quantity
-
   async function removeFromCart(seriesId: number) {
     console.log('seriesId2', seriesId);
     try {
