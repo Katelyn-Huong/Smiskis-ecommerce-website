@@ -5,11 +5,11 @@ import { useCart } from '../components/useCart';
 
 export function SeriesDetails() {
   const [seriesDetails, setSeriesDetails] = useState<Smiskis[]>([]);
-  const [seriesInfo, setSeriesInfo] = useState<Series | null>(null); // State to hold series info
+  const [seriesInfo, setSeriesInfo] = useState<Series | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [err, setErr] = useState<unknown>();
-  const [currentImageIndex, setCurrentImageIndex] = useState(0); // State for current image index
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { seriesId } = useParams();
   const navigate = useNavigate();
   const { addToCart, updateCart, cartItems } = useCart();
@@ -93,7 +93,7 @@ export function SeriesDetails() {
 
         updateCart(existingCartItems.seriesId, newQuantity);
       } else {
-        const imageUrl = bannerImages.primary; // Use the primary image for cart item
+        const imageUrl = bannerImages.primary;
         const response = await fetch('/api/shoppingCartItems', {
           method: 'POST',
           headers: {
