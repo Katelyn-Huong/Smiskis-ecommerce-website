@@ -151,7 +151,6 @@ export function SeriesDetails() {
                 <img
                   src={images[currentImageIndex]}
                   alt={`series ${seriesId} banner`}
-                  className="object-cover w-full "
                 />
               </div>
               <div className="absolute left-0 flex flex-col ml-2 space-y-2 transform -translate-y-1/2 top-1/2">
