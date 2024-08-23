@@ -92,7 +92,6 @@ export function CartProvider({ children }: Props) {
   }
 
   async function removeFromCart(seriesId: number) {
-    console.log('seriesId2', seriesId);
     try {
       const response = await fetch(`/api/shoppingCartItems/${seriesId}`, {
         method: 'DELETE',
