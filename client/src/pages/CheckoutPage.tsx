@@ -9,7 +9,7 @@ export function CheckoutPage() {
   const [err, setErr] = useState<unknown>();
   const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
-  const { cartItems = [], updateCart, removeFromCart } = useCart();
+  const { cartItems = [], updateCart, removeFromCart, emptyCart } = useCart();
 
   useEffect(() => {
     async function getCartItems() {
@@ -72,6 +72,7 @@ export function CheckoutPage() {
 
   function handleCloseModal() {
     setModalOpen(false);
+    emptyCart();
     navigate('/');
   }
 

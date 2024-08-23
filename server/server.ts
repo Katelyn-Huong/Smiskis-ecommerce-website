@@ -164,9 +164,9 @@ app.delete('/api/shoppingCartItems/:seriesId', async (req, res, next) => {
     const { seriesId } = req.params;
 
     const sql = `
-    DELETE FROM "shoppingCartItems"
-    WHERE "seriesId" = $1
-    RETURNING *`;
+    delete from "shoppingCartItems"
+    where "seriesId" = $1
+    returning *`;
     const params = [seriesId];
     const result = await db.query(sql, params);
     const [deletedItem] = result.rows;
@@ -174,6 +174,23 @@ app.delete('/api/shoppingCartItems/:seriesId', async (req, res, next) => {
       throw new ClientError(404, `Shopping cart item ${seriesId} not found`);
     }
     res.json(deletedItem);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// delete all items from cart
+app.delete('/api/shoppingCartItems', async (req, res, next) => {
+  try {
+    const sql = `
+    delete from "shoppingCartItems"
+    returning *`;
+    const result = await db.query(sql);
+    const [deletedItems] = result.rows;
+    if (!deletedItems) {
+      throw new ClientError(404, 'No items in the shopping cart to delete');
+    }
+    res.sendStatus(204);
   } catch (err) {
     next(err);
   }
